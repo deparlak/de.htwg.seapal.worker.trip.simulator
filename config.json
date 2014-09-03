@@ -1,0 +1,16 @@
+{
+    "simulation" : {
+        "areaGeohash"       :   "u0",
+        "botUpdateTimeout"  :   5,
+        "botUpdates"        :   1,
+        "botPrefix"         :   "trackSimulationBot",
+        "botPassword"       :   "TBD_SOME_PASSWORD",
+        "botsToStart"       :   1
+    },
+
+    "server" : {     
+        "loginUrl"      :   "http://localhost:9000/login",
+        "logoutUrl"     :   "http://localhost:9000/logout",
+        "syncGatewayUrl":   "http://localhost:9000/database"
+    }
+}

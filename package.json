@@ -1,0 +1,21 @@
+{
+  "name"        : "de.htwg.seapal.worker.trip.simulator",
+  "version"     : "0.0.0",
+  "private"     : true,
+  "description" : "Worker daemon to simulate trips.",
+  "main"        : "index.js",
+  "scripts"     : {
+    "start": "node multiple.js"
+  },
+  "keywords": [
+    "daemon",
+    "seapal"
+  ],
+  "author"      : "seapal",
+  "dependencies": {
+        "nconf"       : ">= 0.6.9",
+        "pouchdb"     : "3.0.3",
+        "ngeohash"    : "0.6.0",
+        "de.htwg.seapal.worker"      : "git+http://git@github.com/deparlak/de.htwg.seapal.worker.git"
+    }
+}
