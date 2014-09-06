@@ -35,7 +35,14 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
     // called counter
     var called = 0;
     // last position send
-    var geoPosition = {_id : user.email+ '/geoPosition', type : 'geoPosition', lat : bbox.minlat, lng : bbox.minlng, hash : geohash.encode(bbox.minlat, bbox.minlng)};
+    var geoPosition = 
+    {    _id    : user.email+ '/geoPosition', 
+        type    : 'geoPosition', 
+        lat     : bbox.minlat, 
+        lng     : bbox.minlng, 
+        geohash : geohash.encode(bbox.minlat, bbox.minlng),
+        owner   : user.email
+    };
     // set direction to forward
     var forward = true;
     // reference to db
@@ -96,6 +103,8 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         
         // increment counter
         called++;
+        // set the date, on which the geoPosition was set
+        geoPosition.date = new Date().toISOString();
         
         // post a new position
         db.put(geoPosition, function(err, response) {
@@ -124,7 +133,7 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
             }
             
             // get geohash
-            geoPosition.hash = geohash.encode(geoPosition.lat, geoPosition.lng);
+            geoPosition.geohash = geohash.encode(geoPosition.lat, geoPosition.lng);
             
             // so all new values are calculated, now call the sumulatePosition after the timeout
             timer = setTimeout(sumulatePosition, timeout);

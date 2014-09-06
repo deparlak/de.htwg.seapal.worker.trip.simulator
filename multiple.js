@@ -42,8 +42,8 @@ process.setMaxListeners(0);
 // valid character of a geohash.
 var validGeohashChar = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 // check if max geohash length is not reached.
-if (simulation.areaGeohash.length < 1 || simulation.areaGeohash.length > 8) {
-    throw new Error("areaGeohash in configuration should have a length between 1 and 8");
+if (simulation.areaGeohash.length < 0 || simulation.areaGeohash.length > 8) {
+    throw new Error("areaGeohash in configuration should have a length between 0 and 8");
 }
 // check if are geohash is valid.
 for (var i = 0; i < simulation.areaGeohash.length; i++) {
@@ -82,7 +82,9 @@ for (var i = 1; i <= simulation.botsToStart; i++) {
 function createWorker(i, user) {
     // the worker will be created after a time out, so that the simulated positions are evenly spread
     workerTimer[i] = setTimeout(function() {
-        new TripSimulator (server, user, simulation.botUpdates, simulation.botUpdateTimeout, getRandomHash());
+        var startHash = getRandomHash();
+        console.log("Start worker on position : "+startHash);
+        new TripSimulator (server, user, simulation.botUpdates, simulation.botUpdateTimeout, startHash);
     }, (i % maxTimeout) * 1000);
 }
 
