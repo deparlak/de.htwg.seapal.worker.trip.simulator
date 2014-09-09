@@ -17,7 +17,7 @@ nconf.argv()
 var simulation = nconf.get("simulation"); 
 var server = nconf.get("server");
 var avtive = 0;
-var maxTimeout = 3;
+var maxTimeout = simulation.botsToStart;
 // all worker timers, to clear them on SIGINT.
 var workerTimer = [];
 
@@ -83,7 +83,7 @@ function createWorker(i, user) {
     // the worker will be created after a time out, so that the simulated positions are evenly spread
     workerTimer[i] = setTimeout(function() {
         var startHash = getRandomHash();
-        console.log("Start worker on position : "+startHash);
+        console.log("Start worker " + i + " on position : "+startHash);
         new TripSimulator (server, user, simulation.botUpdates, simulation.botUpdateTimeout, startHash);
     }, (i % maxTimeout) * 1000);
 }

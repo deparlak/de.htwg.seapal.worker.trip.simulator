@@ -104,7 +104,8 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         // increment counter
         called++;
         // set the date, on which the geoPosition was set
-        geoPosition.date = new Date().toISOString();
+        var now = new Date();
+        geoPosition.date = now.toISOString();
         
         // post a new position
         db.put(geoPosition, function(err, response) {
