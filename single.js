@@ -34,6 +34,9 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
     var bbox = {minlat : tmp[0], minlng : tmp[1], maxlat : tmp[2], maxlng : tmp[3]};
     // called counter
     var called = 0;
+    // steps to move. This value will be added or removed to LatLng coordinates.
+    var moveStep = 1;
+    
     // last position send
     var geoPosition = 
     {    _id    : user.email+ '/geoPosition', 
@@ -122,14 +125,14 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
             geoPosition._rev = response.rev;        
             // set the new position
             if (forward && geoPosition.lat < bbox.maxlat) {
-                geoPosition.lat = (geoPosition.lat + 0.02 > bbox.maxlat) ? bbox.maxlat : geoPosition.lat + 0.02;
+                geoPosition.lat = (geoPosition.lat + moveStep > bbox.maxlat) ? bbox.maxlat : geoPosition.lat + moveStep;
             } else if (forward && geoPosition.lng < bbox.maxlng) {
-                geoPosition.lng = (geoPosition.lng + 0.02 > bbox.maxlng) ? bbox.maxlng : geoPosition.lng + 0.02;
+                geoPosition.lng = (geoPosition.lng + moveStep > bbox.maxlng) ? bbox.maxlng : geoPosition.lng + moveStep;
                 forward = (geoPosition.lng == bbox.maxlng) ? false : true;
             } else if (!forward && geoPosition.lat > bbox.minlat) {
-                geoPosition.lat = (geoPosition.lat - 0.02 < bbox.minlat) ? bbox.minlat : geoPosition.lat - 0.02;
+                geoPosition.lat = (geoPosition.lat - moveStep < bbox.minlat) ? bbox.minlat : geoPosition.lat - moveStep;
             } else if (!forward && geoPosition.lng > bbox.minlng) {
-                geoPosition.lng = (geoPosition.lng - 0.02 < bbox.minlng) ? bbox.minlng : geoPosition.lng - 0.02;
+                geoPosition.lng = (geoPosition.lng - moveStep < bbox.minlng) ? bbox.minlng : geoPosition.lng - moveStep;
                 forward = (geoPosition.lng == bbox.minlng) ? true : false;
             }
             
