@@ -35,12 +35,12 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
     // called counter
     var called = 0;
     // steps to move. This value will be added or removed to LatLng coordinates.
-    var latStep = (bbox.maxlat - bbox.minlat) / 2;
-    var lngStep = (bbox.maxlng - bbox.minlng) / 2;
-    
+    var latStep = (bbox.maxlat - bbox.minlat) / 20.0;
+    var lngStep = (bbox.maxlng - bbox.minlng) / 20.0;
+
     // last position send
     var geoPosition = 
-    {    _id    : user.email+ '/geoPosition', 
+    {    _id    : null, 
         type    : 'geoPosition', 
         lat     : bbox.minlat, 
         lng     : bbox.minlng, 
@@ -74,24 +74,8 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         
         // save db handle
         db = response;
-        
-        // get the actual geoPosition
-        db.get(geoPosition._id, function (err, response) {
-            // check if the document could not be get. If we have a 404, no initial document existed yet
-            if (err && err.status != 404) {
-                throw new Error(err);
-            }
-
-            // check if there was a _rev returned
-            if (response && response._rev) {
-                geoPosition._rev = response._rev;
-            }
-            
-            // call simulate boat position first time.
-            sumulatePosition();         
-        });
-            
-
+        // call simulate boat position first time. (will be called cyclic)
+        sumulatePosition();         
     });
 
     // send position updates to the server.
@@ -107,23 +91,19 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         
         // increment counter
         called++;
+        // get the actual date
+        now = new Date().toISOString();
         // set the date, on which the geoPosition was set
-        var now = new Date();
-        geoPosition.date = now.toISOString();
+        geoPosition.date = now
+        // set the _id
+        geoPosition._id = user.email+ '/geoPosition/'+now, 
         
         // post a new position
         db.put(geoPosition, function(err, response) {
             if (err) {
                 throw new Error(err);
             }
-            
-            // check if there was a _rev returned
-            if (!response || !response.rev) {
-                throw new Error("Got no rev after put");
-            }
-            
-            // set the new rev
-            geoPosition._rev = response.rev;        
+                
             // set the new position
             if (forward && geoPosition.lat < bbox.maxlat) {
                 geoPosition.lat = (geoPosition.lat + latStep > bbox.maxlat) ? bbox.maxlat : geoPosition.lat + latStep;
