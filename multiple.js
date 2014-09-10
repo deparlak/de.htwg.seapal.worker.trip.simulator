@@ -54,7 +54,7 @@ for (var i = 0; i < simulation.areaGeohash.length; i++) {
 // get a random hash, based on the areaGeohash.
 function getRandomHash() {
     var hash = simulation.areaGeohash;
-    for (var i = simulation.areaGeohash.length; i < 9; i++) {
+    for (var i = simulation.areaGeohash.length; i < simulation.areaGeohash.length + 1; i++) {
         index = Math.floor(Math.random() * validGeohashChar.length);
         hash += validGeohashChar[index];
     }

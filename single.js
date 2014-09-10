@@ -28,14 +28,15 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
     var timeout = timeout * 1000;
     // timer for cyclic call
     var timer = null;
-    // get the bbox, where the position updates should be made
-    var tmp = geohash.decode_bbox (startHashString);
-    // extract min, max values
+    // extract latlng coordinates
+    tmp = geohash.decode_bbox (startHashString);
+    // bbox for range of movement.
     var bbox = {minlat : tmp[0], minlng : tmp[1], maxlat : tmp[2], maxlng : tmp[3]};
     // called counter
     var called = 0;
     // steps to move. This value will be added or removed to LatLng coordinates.
-    var moveStep = 1;
+    var latStep = (bbox.maxlat - bbox.minlat) / 2;
+    var lngStep = (bbox.maxlng - bbox.minlng) / 2;
     
     // last position send
     var geoPosition = 
@@ -125,14 +126,14 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
             geoPosition._rev = response.rev;        
             // set the new position
             if (forward && geoPosition.lat < bbox.maxlat) {
-                geoPosition.lat = (geoPosition.lat + moveStep > bbox.maxlat) ? bbox.maxlat : geoPosition.lat + moveStep;
+                geoPosition.lat = (geoPosition.lat + latStep > bbox.maxlat) ? bbox.maxlat : geoPosition.lat + latStep;
             } else if (forward && geoPosition.lng < bbox.maxlng) {
-                geoPosition.lng = (geoPosition.lng + moveStep > bbox.maxlng) ? bbox.maxlng : geoPosition.lng + moveStep;
+                geoPosition.lng = (geoPosition.lng + lngStep > bbox.maxlng) ? bbox.maxlng : geoPosition.lng + lngStep;
                 forward = (geoPosition.lng == bbox.maxlng) ? false : true;
             } else if (!forward && geoPosition.lat > bbox.minlat) {
-                geoPosition.lat = (geoPosition.lat - moveStep < bbox.minlat) ? bbox.minlat : geoPosition.lat - moveStep;
+                geoPosition.lat = (geoPosition.lat - latStep < bbox.minlat) ? bbox.minlat : geoPosition.lat - latStep;
             } else if (!forward && geoPosition.lng > bbox.minlng) {
-                geoPosition.lng = (geoPosition.lng - moveStep < bbox.minlng) ? bbox.minlng : geoPosition.lng - moveStep;
+                geoPosition.lng = (geoPosition.lng - lngStep < bbox.minlng) ? bbox.minlng : geoPosition.lng - lngStep;
                 forward = (geoPosition.lng == bbox.minlng) ? true : false;
             }
             
