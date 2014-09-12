@@ -34,6 +34,10 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
     var bbox = {minlat : tmp[0], minlng : tmp[1], maxlat : tmp[2], maxlng : tmp[3]};
     // called counter
     var called = 0;
+    // max repeations after a timeout
+    var maxTimeoutErrorRetries = 4;
+    // counter for error, because of timeout
+    var timeoutErrorCounter = 0;
     // steps to move. This value will be added or removed to LatLng coordinates.
     var latStep = (bbox.maxlat - bbox.minlat) / 20.0;
     var lngStep = (bbox.maxlng - bbox.minlng) / 20.0;
@@ -101,9 +105,23 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         // post a new position
         db.put(geoPosition, function(err, response) {
             if (err) {
+                timeoutErrorCounter++;
+                // repeat after a timeout, if not max repeats are reached.
+                if (maxTimeoutErrorRetries > timeoutErrorCounter) {
+                    console.log(err);
+                    console.log("Retry after " + timeoutErrorCounter + " calls. "+err);
+                    timer = setTimeout(sumulatePosition, timeout);
+                    return;
+                }
+                // max retries reached.
                 throw new Error(err);
             }
-                
+            if (0 !== timeoutErrorCounter) {
+                console.log("Process is running ok again after " + timeoutErrorCounter + " retries. ");
+                // no error occurred, so set counter back
+                timeoutErrorCounter = 0;
+            }
+            
             // set the new position
             if (forward && geoPosition.lat < bbox.maxlat) {
                 geoPosition.lat = (geoPosition.lat + latStep > bbox.maxlat) ? bbox.maxlat : geoPosition.lat + latStep;
