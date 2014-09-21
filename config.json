@@ -2,10 +2,10 @@
     "simulation" : {
         "areaGeohash"       :   "g",
         "botUpdateTimeout"  :   5,
-        "botUpdates"        :   300,
+        "botUpdates"        :   20000,
         "botPrefix"         :   "trackSimulationBot",
         "botPassword"       :   "TBD_A_PASSWORD",
-        "botsToStart"       :   50
+        "botsToStart"       :   5
         },
 
     "server" : {     

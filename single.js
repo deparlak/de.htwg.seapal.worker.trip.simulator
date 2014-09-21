@@ -44,7 +44,8 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
 
     // last position send
     var geoPosition = 
-    {    _id    : null, 
+    {   _id     : user.email+ '/geoPosition', 
+        _rev    : null,
         type    : 'geoPosition', 
         lat     : bbox.minlat, 
         lng     : bbox.minlng, 
@@ -78,8 +79,22 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         
         // save db handle
         db = response;
-        // call simulate boat position first time. (will be called cyclic)
-        sumulatePosition();         
+        
+        // first get the last set position, to get the _rev
+        db.get(geoPosition._id, function(err, response) {
+            // if we get an error, which is not because of a missing doc 
+            // (missing doc is ok if it's the first created document by this user)
+            if (err && err.status !== 404) {
+                throw new Error(err);
+            } else if (err && err.status === 404){
+                geoPosition._rev = null;
+            } else {
+                geoPosition._rev = response._rev;
+            }
+        
+            // call simulate boat position first time. (will be called cyclic)
+            sumulatePosition();  
+        });       
     });
 
     // send position updates to the server.
@@ -99,8 +114,6 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         now = new Date().toISOString();
         // set the date, on which the geoPosition was set
         geoPosition.date = now
-        // set the _id
-        geoPosition._id = user.email+ '/geoPosition/'+now, 
         
         // post a new position
         db.put(geoPosition, function(err, response) {
@@ -121,6 +134,9 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
                 // no error occurred, so set counter back
                 timeoutErrorCounter = 0;
             }
+            
+            // set the _rev
+            geoPosition._rev = response.rev;
             
             // set the new position
             if (forward && geoPosition.lat < bbox.maxlat) {
