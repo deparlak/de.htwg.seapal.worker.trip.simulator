@@ -15,6 +15,7 @@ position documents should be created by real users.
 
 #Configuration
 The complete configuration is stored in the config.json file.
+
 The **simulation** Attribute contain all information about the users we like to simulate.
 * areaGeohash      : The geohash position in which the boats should be simulated. E.g. if we use "0ee", all users will move in this area.
 * botUpdateTimeout : The position update frequency of each user in seconds.
