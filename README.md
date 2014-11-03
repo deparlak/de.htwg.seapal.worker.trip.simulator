@@ -56,6 +56,6 @@ To run the application you should start a command line
 ``` 
 # install all packages.
 npm install
-# This command will start the defined number of bot servers
+# This command will start the defined number of bot servers (press ctrl+c to end)
 node multiple
 ```

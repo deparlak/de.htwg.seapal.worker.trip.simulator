@@ -69,6 +69,7 @@ console.log("Number of position updates one bot will do    : "+simulation.botUpd
 console.log("Position update sending frequency in seconds  : "+simulation.botUpdateTimeout + " seconds");
 
 console.log("WARNING : Bots have to be valid users on the syncGateway.");
+console.log("press ctrl+c to end");
 
 
 // run through all useres and createWorker for them.
