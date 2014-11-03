@@ -114,6 +114,8 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
         now = new Date().toISOString();
         // set the date, on which the geoPosition was set
         geoPosition.date = now
+        // normalize
+        geoPosition.geohash = startHashString + geoPosition.geohash.substr(startHashString.length, 9)
         
         // post a new position
         db.put(geoPosition, function(err, response) {
@@ -152,8 +154,9 @@ var TripSimulator = function (server, user, maxCalls, timeout, startHashString) 
             }
             
             // get geohash
-            geoPosition.geohash = geohash.encode(geoPosition.lat, geoPosition.lng);
-            
+            geoPosition.geohash = geohash.encode(geoPosition.lat, geoPosition.lng);            
+            geoPosition.geohash = startHashString + geoPosition.geohash.substr(startHashString.length, 9)
+            console.log(geoPosition.geohash);
             // so all new values are calculated, now call the sumulatePosition after the timeout
             timer = setTimeout(sumulatePosition, timeout);
         });

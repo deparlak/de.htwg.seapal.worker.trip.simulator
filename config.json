@@ -5,7 +5,7 @@
         "botUpdates"        :   20000,
         "botPrefix"         :   "trackSimulationBot",
         "botPassword"       :   "TBD_A_PASSWORD",
-        "botsToStart"       :   50
+        "botsToStart"       :   30
         },
 
     "server" : {     
