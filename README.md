@@ -6,7 +6,7 @@
 
 #Description
 This project is a node.js application, which simulate seapal user. Therefore the application
-can start a defined number of processes. Each process is a logged in user, which simulate
+can start a defined number of simulators. Each simulator is a logged in user, which simulate
 his boat position on the map. The boat position will be send to the sync Gateway by creating 
 a document with the position of the boat. The position will be saved as lat/lng coordinates, as
 well as a [geohash](http://www.bigdatamodeling.org/2013/01/intuitive-geohash.html).
